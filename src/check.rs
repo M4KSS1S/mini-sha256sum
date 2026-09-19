@@ -13,10 +13,9 @@ pub struct Args
     pub hash_files : Option<Vec<String>>,
 
     #[arg(short= 'c', long = "check")]
-    /// files containes hashes to check (sha256sum format)
+    /// files contains hashes to check (sha256sum format)
     pub check_file : Option<String>
 }
-
 
 fn parse_sum_line(str : &str) -> Option<(&str, &str)>
 {
@@ -28,6 +27,10 @@ fn parse_sum_line(str : &str) -> Option<(&str, &str)>
 pub fn check_output(file: &str, fail : &mut u32) -> Result<Vec<String>, Box<dyn Error>>
 {
     let file_lines = read_to_string(file)?;
+    if file_lines.is_empty()
+    {
+        return Err("no properly formatted checksum lines found".into());
+    }
     let mut last_res : Vec<String> = Vec::new();
     for lines in file_lines.lines()
     {
